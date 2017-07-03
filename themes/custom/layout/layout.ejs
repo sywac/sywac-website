@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<%- partial('_partial/head') %>
+<body>
+  <div class="container">
+    <%- partial('_partial/header') %>
+    <section class="content wrap documentationContent">
+      <!-- start "body" in layout.ejs -->
+      <%- body %>
+      <!-- end "body" in layout.ejs -->
+      <% if (page.group === 'docs') { %>
+      <%- partial('_partial/sidebar') %>
+      <% } %>
+    </section>
+    <%- partial('_partial/footer') %>
+  </div>
+</body>
+</html>

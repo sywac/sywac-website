@@ -1,0 +1,10 @@
+<div class="inner-content">
+  <!-- start "page.content" in page.ejs -->
+  <%- page.content %>
+  <!-- end "page.content" in page.ejs -->
+  <% if (page.next){ %>
+  <div class="docs-prevnext">
+    <a class="docs-next" href="<%= page.next %>.html">Next →</a>
+  </div>
+  <% } %>
+</div>

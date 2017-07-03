@@ -1,0 +1,37 @@
+{
+  "name": "sywac-website",
+  "version": "0.1.0",
+  "description": "Static website for sywac docs and stuff",
+  "private": true,
+  "hexo": {
+    "version": "3.3.7"
+  },
+  "dependencies": {
+    "hexo": "^3.3.7",
+    "hexo-deployer-git": "^0.3.0",
+    "hexo-generator-cname": "^0.3.0",
+    "hexo-renderer-ejs": "^0.3.0",
+    "hexo-renderer-marked": "^0.3.0",
+    "hexo-renderer-stylus": "^0.3.3",
+    "hexo-server": "^0.2.1"
+  },
+  "scripts": {
+    "start": "hexo server",
+    "newpost": "hexo new post",
+    "newpage": "hexo new page",
+    "clean": "hexo clean",
+    "generate": "hexo generate",
+    "regen": "npm run clean && npm run generate",
+    "deploy": "npm run clean && hexo generate --deploy"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sywac/sywac-website.git"
+  },
+  "author": "nexdrew",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sywac/sywac-website/issues"
+  },
+  "homepage": "https://github.com/sywac/sywac-website#readme"
+}
