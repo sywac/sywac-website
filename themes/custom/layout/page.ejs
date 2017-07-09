@@ -2,9 +2,14 @@
   <!-- start "page.content" in page.ejs -->
   <%- page.content %>
   <!-- end "page.content" in page.ejs -->
-  <% if (page.next){ %>
+  <% if (page.next || page.prev) { %>
   <div class="docs-prevnext">
-    <a class="docs-next" href="<%= page.next %>.html">Next →</a>
+    <% if (page.prev) { %>
+    <a class="docs-prev" href="<%= page.prev %>">← Previous</a>
+    <% } %>
+    <% if (page.next) { %>
+    <a class="docs-next" href="<%= page.next %>">Next →</a>
+    <% } %>
   </div>
   <% } %>
 </div>

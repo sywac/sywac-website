@@ -105,12 +105,12 @@ ul ul, ul ol, ol ol, ol ul {
 }
 
 a {
-  color: #1572c7;
+  color: #6557C4;
   text-decoration: none;
 }
 
 a:hover, a:focus {
-  color: #1572c7;
+  color: #6557C4;
   text-decoration: underline;
 }
 
@@ -1120,7 +1120,7 @@ p + .apiIndex {
  * Based on dabblet (http://dabblet.com)
  * @author Lea Verou
  */
-
+/*
 code[class*="language-"],
 pre[class*="language-"],
 .apiIndex pre {
@@ -1164,6 +1164,7 @@ code[class*="language-"]::selection, code[class*="language-"] ::selection {
 }
 
 /* Code blocks */
+/*
 pre[class*="language-"] {
 	padding: 1em;
 	margin: .5em 0;
@@ -1174,8 +1175,10 @@ pre[class*="language-"] {
 pre[class*="language-"] {
 	background: #f5f2f0;
 }
+*/
 
 /* Inline code */
+/*
 :not(pre) > code[class*="language-"] {
 	padding: .1em;
 	border-radius: .3em;
@@ -1251,9 +1254,15 @@ pre[class*="language-"] {
 .token.entity {
 	cursor: help;
 }
+*/
 
 /* Custom prism rules for the sywac docs */
-
+code[class*="language-"],
+pre[class*="language-"],
+.apiIndex li {
+  font-size: 14px;
+}
+/*
 code[class*="language-"],
 pre[class*="language-"] {
   margin: 1.5em 0;
@@ -1279,9 +1288,11 @@ pre[class*="language-"],
 .prism + .prism {
   margin-top: -15px;
 }
+/**/
 
 /* Line highlighting */
 
+/*
 .prism {
   position: relative;
 }
@@ -1295,6 +1306,7 @@ pre[class*="language-"],
   position: absolute;
   right: 0;
 }
+*/
 
 @media (max-width: 960px) {
   .wrap {

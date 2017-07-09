@@ -8,8 +8,12 @@
       <!-- start "body" in layout.ejs -->
       <%- body %>
       <!-- end "body" in layout.ejs -->
-      <% if (page.group === 'docs') { %>
-      <%- partial('_partial/sidebar') %>
+      <% if (page.source.split('/')[0] === 'docs') { %>
+      <%- partial('_partial/sidebar-docs') %>
+      <% } else if (page.source.split('/')[0] === 'about') { %>
+      <%- partial('_partial/sidebar-about') %>
+      <% } else { %>
+      <%- partial('_partial/sidebar-index') %>
       <% } %>
     </section>
     <%- partial('_partial/footer') %>
