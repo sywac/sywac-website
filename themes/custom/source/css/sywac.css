@@ -166,6 +166,10 @@ th {
   border-bottom: solid 1px #eee;
 }
 
+tr:nth-child(even) {
+  background: #f9f9f9;
+}
+
 .left {
   float: left;
 }

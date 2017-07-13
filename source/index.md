@@ -1,9 +1,9 @@
 ---
 next: /docs
 ---
-# So you want a CLI...
+# So you want a CLI... ☺
 
-__Sywac__ is a small framework for building fast and beautiful command line applications in Node.js.
+__Sywac__ is a small framework for building fast and beautiful command line apps in Node.js.
 
 The central tenets of sywac are:
 
@@ -17,6 +17,8 @@ The central tenets of sywac are:
 While there are a handful of good argument parsers out there, like [yargs](http://yargs.js.org/) and [commander](http://tj.github.io/commander.js/), none of them support __asynchronous__ parsing and execution, and none of them have the level of flexibility and customization that sywac has.
 
 The [author](https://github.com/nexdrew) of sywac is actually a maintainer of yargs, and, after realizing [some](https://github.com/yargs/yargs/issues/541#issuecomment-256682437) [of](https://github.com/yargs/yargs/issues/756) [the](https://github.com/yargs/yargs/issues/564) [major](https://github.com/yargs/yargs/issues/510) [limitations](https://github.com/yargs/yargs/issues/859) inherent in the yargs architecture, he opted for a full rewrite, attempting to fix API problems and solve a lot of known issues along the way. Painful? Yes. But also well worth it.
+
+For a detailed comparison of features, see the [Comparison Matrix](/about/comparison-matrix.html).
 
 ## Why is asynchronous parsing so important?
 
