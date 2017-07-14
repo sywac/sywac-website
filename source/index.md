@@ -72,13 +72,13 @@ When it comes to parsing CLI arguments (or a command string for a chatbot), the 
 $ program push -f artifact.tgz
 ```
 
-Is `push` a command or a positional argument? Is `artifact.tgz` supposed to be the value of `-f`? If it does, is the value supposed to represent a file that does or does not exist? What if `-f` represents a boolean and `artifact.tgz` is a positional argument?
+Is `push` a command or a positional argument? Is `artifact.tgz` supposed to be the value of `-f`? If it is, is the value supposed to represent a file that does or does not exist? What if `-f` represents a boolean and `artifact.tgz` is a positional argument?
 
 The only way to correctly interpret the arguments is based on the expected _types_ defined in `program`.
 
 Now most command line parsers support type definitions, typically by configuring a parser and letting the synchronous parser do the work.
 
-But in sywac, each expected argument is represented by an instance of a special Type class, and parsing is delegated to these type instances in an asynchronous, highly concurrent fashion. Now, instead of a single parser having all the power, each type instance is allowed to parse its own arguments, making a system where its easy to plug in your own types and change how arguments are parsed and interpreted.
+But in sywac, each expected argument is represented by an instance of a special Type class, and parsing is delegated to these type instances in an asynchronous, highly concurrent fashion. Now, instead of a single parser having all the power, each type instance is allowed to parse its own arguments, making a system where it's easy to plug in your own types and change how arguments are parsed and interpreted.
 
 ## Enough chit-chat, show me the code!
 
