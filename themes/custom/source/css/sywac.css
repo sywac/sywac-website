@@ -1317,6 +1317,7 @@ pre[class*="language-"],
     width: 720px;
   }
   .nav-docs {
+    margin-top: 25px;
     float: none;
   }
 }
@@ -1336,5 +1337,45 @@ pre[class*="language-"],
   }
   .inner-content {
     width: 400px;
+  }
+}
+
+/* iPhone 6 plus */
+@media (max-width: 414px) {
+  .wrap {
+    width: 405px;
+  }
+  .inner-content {
+    width: 375px;
+  }
+}
+
+/* iPhone 6 */
+@media (max-width: 375px) {
+  .wrap {
+    width: 365px;
+  }
+  .inner-content {
+    width: 335px;
+  }
+}
+
+/* galaxy s5 */
+@media (max-width: 360px) {
+  .wrap {
+    width: 350px;
+  }
+  .inner-content {
+    width: 320px;
+  }
+}
+
+/* iPhone 5 */
+@media (max-width: 320px) {
+  .wrap {
+    width: 310px;
+  }
+  .inner-content {
+    width: 280px;
   }
 }
