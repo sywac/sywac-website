@@ -41,22 +41,23 @@ next: /about/roadmap.html
 | Array parsing supports comma (or other delimiter) separated values | ✅ | ❌ | ❌ |
 | Number options | ✅ | ✅ | Only via custom coercion |
 | Path/file/directory options | ✅ | ❌ | ❌ |
-| Count options | Only via custom type | ✅ | Only via custom coercion |
+| Count options | Only via [custom type](/docs/custom-types.html) | ✅ | Only via custom coercion |
 | Enum/choices options | ✅ | ✅ | Via `RegExp` or custom coercion |
-| Config file options | Only via custom type | ✅ | Only via custom coercion |
+| Config file options | Only via [custom type](/docs/custom-types.html) | ✅ | Only via custom coercion |
 | Customize special `--help` option | ✅ | ✅ | ❌ |
 | Customize special `--version` option | ✅ | ✅ | ❌ |
 | Auto package version lookup | ✅ | ✅ | ❌ |
 | Ability to plug in customized components | ✅ | ❌ | ❌ |
 | Support for ignorables in positional argument DSL | ✅ | ❌ | ❌ |
 | Parsing result provides details of where argument/option value came from | ✅ | ❌ | ❌ |
-| Implies/conflicts option validation | Only via custom check | ✅ | ❌ |
+| Implies/conflicts option validation | Only via [custom check](/docs/sync-config.html#check) | ✅ | ❌ |
 | Converts multi-word aliases to camelCase | ❌ | ✅ | ✅ |
 | Parses environment variables | [On roadmap](/about/roadmap.html) | ✅ | ❌ |
 | Lookup program config in package.json | ❌ | ✅ | ❌ |
 | Parsing supports dot-notation for object properties | ❌ | ✅ | ❌ |
 | Parsing supports `--no-` prefix for boolean negation | [On roadmap](/about/roadmap.html) | ✅ | ✅ |
 | Ability to recommend commands on no command match | ❌ | ✅ | ❌ |
+| Support for generating bash completion script | ❌ | ✅ | ❌ |
 | Parsing of undeclared options | ✅ | ✅ | ❌ |
 | Parses `process.argv` by default | ✅ | ✅ | ❌ |
 | Parsing accepts strings | ✅ | ✅ | ❌ |
