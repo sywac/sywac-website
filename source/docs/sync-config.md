@@ -257,7 +257,7 @@ Configure the `Api` instance directly.
 
   - &nbsp;`name`: string, default is basename of `process.argv[1]`
 
-    Explicitly define the name of the program to use in help text. This value will be used in place of `$0` in [usage](#usage) content.
+    Explicitly define the name of the program to use in help text. This value will be used in place of `$0` in [usage](#usage) content or [examples](#example).
 
   - &nbsp;`factories`: object
 
@@ -353,47 +353,341 @@ See [Path / File / Dir](/docs/path-type.html) for further details and examples.
 <a name="enumeration"></a>
 ## `.enumeration(flags, opts)`
 
-> Needs docs!
+<sup>Since 1.0.0</sup>
+
+Add a flagged option that should be parsed as a string, whose value must be one of an enumerated set of choices.
+
+- &nbsp;`flags`: string, no default
+
+  Defines the flags used in help text and aliases to expect when parsing.
+
+  For example, `'-e, --enum <value>'` would allow `-e` or `--enum` to be given when parsing.
+
+- &nbsp;`opts`: object, no default
+
+  In addition to [common type properties](/docs/type-properties.html), the object may also define:
+
+  - &nbsp;`choices`: array of strings, no default
+
+    The predefined set of values allowed, given as an array.
+
+    Note that a `defaultValue` IS NOT required to be one of the valid choices.
+
+  - &nbsp;`caseInsensitive`: boolean, default `true`
+
+    Should case be ignored when matching a parsed value against predefined choices?
+
+    For example, `one`, `One`, or `ONE` would be a valid value for choices `['one', 'two', 'three']`.
+
+    Note that case-insensitive matching DOES NOT mean the value assigned in the resulting `argv` will be modified. The value given on the command line will remain intact.
+
+Returns the `Api` instance for method chaining.
+
+Example:
+
+```js
+sywac.enumeration('-e, --env <environment>', {
+  desc: 'The deployment environment to work with',
+  choices: ['local', 'dev', 'qa', 'stg', 'prd']
+})
+```
+
+See [Enum](/docs/enum-type.html) for further details and examples.
 
 <a name="epilogue"></a>
 ## `.epilogue(epilogue)`
 
-> Needs docs!
+<sup>Since 1.0.0</sup>
+
+Define some content to display at the end of generated help text, just before any error messages.
+
+If called more than once, it will overwrite the previous value.
+
+- &nbsp;`epilogue`: string, no default
+
+  The content to display in help text.
+
+  If no value is given, it will remove any epilogue previously defined (e.g. at a higher command level).
+
+Returns the `Api` instance for method chaining.
+
+Example:
+
+```js
+sywac.epilogue('Visit http://sywac.io for detailed documentation')
+```
+
+See [Help Text](/docs/help-text.html) for further details and examples.
 
 <a name="example"></a>
 ## `.example(example, opts)`
 
-> Needs docs!
+<sup>Since 1.0.0</sup>
+
+Add an example command to display in generated help text, between the last group of types and the epilogue.
+
+Call this method multiple times to display multiple examples.
+
+In output, each example will be grouped according to the `group` property (default `'Examples:'`), preceded by a `description`/`desc` if given, and prefixed with the `examplePrefix` from [output settings](#outputSettings) (default `'$ '`).
+
+- &nbsp;`example`: string, no default
+
+  The example command to display in help text.
+
+  Any uses of `$0` in this string will be replaced with the program name and any necessary commands, similar to the generated usage string.
+
+- &nbsp;`opts`: object, no default
+
+  The following configuration properties are supported:
+
+  - &nbsp;`description` or `desc`: string, no default
+
+    A description to display above the example command.
+
+  - &nbsp;`group`: string, default `'Examples:'`
+
+    Define the header this example should be grouped with when displayed.
+
+  If no `description`/`desc` is given, the example will be placed directly under the last example given with a description. This allows you to apply one description to multiple examples.
+
+Returns the `Api` instance for method chaining.
+
+Example:
+
+```js
+sywac
+  .example('$0 add upstream git@github.com:sywac/sywac.git', {
+    desc: 'Add a remote named "upstream"',
+    group: 'Git-Style Examples:'
+  })
+  .example('$0 prune upstream', {
+    desc: 'Remove any stale tracking branches from "upstream"',
+    group: 'Git-Style Examples:'
+  })
+  .example('$0 list', {
+    desc: 'The following will all run the default "list" command'
+  })
+  .example('$0 ls')
+  .example('$0')
+```
+
+See [Help Text](/docs/help-text.html) for further details and examples.
 
 <a name="exampleOrder"></a>
 ## `.exampleOrder(orderArray)`
 
-> Needs docs!
+<sup>Since 1.0.0</sup>
+
+If there are multiple example groups, you can control the order in which they should be displayed using this method.
+
+If this method is not used, [examples](#example) will be displayed by group according to insertion order.
+
+- &nbsp;`orderArray`: array of strings, default `['Examples:']`
+
+  An array that defines the desired order of example groups/headers.
+
+Returns the `Api` instance for method chaining.
+
+Example:
+
+```js
+sywac.exampleOrder(['First Examples:', 'Second Examples:', 'Other Examples:'])
+```
+
+See [Help Text](/docs/help-text.html) for further details and examples.
 
 <a name="file"></a>
 ## `.file(flags, opts)`
 
-> Needs docs!
+<sup>Since 1.0.0</sup>
+
+Add a flagged option that should be parsed as a file path.
+
+This is equivalent to calling `.path(flags, Object.assign({ dirAllowed: false }, opts))`
+
+- &nbsp;`flags`: string, no default
+
+  Defines the flags used in help text and aliases to expect when parsing.
+
+  For example, `'-f, --file <file>'` would allow `-f` or `--file` to be given when parsing.
+
+- &nbsp;`opts`: object, no default
+
+  See [path](#path) method for list of supported properties.
+
+Returns the `Api` instance for method chaining.
+
+Example:
+
+```js
+sywac.file('-f, --file <file>', {
+  desc: 'A file that must exist on the local file system',
+  mustExist: true
+})
+```
+
+See [Path / File / Dir](/docs/path-type.html) for further details and examples.
 
 <a name="groupOrder"></a>
 ## `.groupOrder(orderArray)`
 
-> Needs docs!
+<sup>Since 1.0.0</sup>
+
+Use this method to control the order in which type groups/headers should be displayed in help text.
+
+This applies to all types: commands, positional arguments, and flagged options.
+
+Any groups not included in the order will be displayed in insertion order after those included.
+
+- &nbsp;`orderArray`: array of strings, default `['Commands:', 'Arguments:', 'Options:']`
+
+  An array that defines the desired order of type groups/headers.
+
+Returns the `Api` instance for method chaining.
+
+Example:
+
+```js
+sywac.groupOrder([
+  'Commands:',
+  'Arguments:',
+  'Required Options:',
+  'Options:'
+])
+```
+
+See [Help Text](/docs/help-text.html) for further details and examples.
 
 <a name="help"></a>
 ## `.help(flags, opts)`
 
-> Needs docs!
+<sup>Since 1.0.0</sup>
+
+Add a flagged option that should be parsed as a boolean and trigger output of help text.
+
+- &nbsp;`flags`: string, default `'--help'`
+
+  Defines the flags used in help text and aliases to expect when parsing.
+
+  For example, `'-h, --help'` would allow `-h` or `--help` to be given when parsing.
+
+- &nbsp;`opts`: object, no default
+
+  In addition to [common type properties](/docs/type-properties.html), the object may also define:
+
+  - &nbsp;`description` or `desc`: string, default `'Show help'`
+
+    The description displayed in help text for this option.
+
+  - &nbsp;`implicitCommand`: boolean, default `true`
+
+    Whether to enable implicit commands for any multi-char flags/aliases defined for this option.
+
+    An implicit command allows help text to be requested via command (e.g. `program help`) as well as by option/flag (e.g. `program whatever --help`).
+
+  - &nbsp;`includePreface`: boolean, default `true`
+
+    Whether the [preface](#preface) portion of help text (icon and slogan) should be displayed when help is explicitly requested.
+
+  - &nbsp;`includeUsage`: boolean, default `true`
+
+    Whether the [usage](#usage) portion of help text should be displayed when help is explicitly requested.
+
+  - &nbsp;`includeGroups`: boolean, default `true`
+
+    Whether the type groups portion of help text should be displayed when help is explicitly requested.
+
+  - &nbsp;`includeExamples`: boolean, default `true`
+
+    Whether the [examples](#example) portion of help text should be displayed when help is explicitly requested.
+
+  - &nbsp;`includeEpilogue`: boolean, default `true`
+
+    Whether the [epilogue](#epilogue) portion of help text should be displayed when help is explicitly requested.
+
+Returns the `Api` instance for method chaining.
+
+Example:
+
+```js
+// use all defaults
+sywac.help()
+// specify just flags
+sywac.help('-h, --help')
+// specify flags and opts
+sywac.help('-h, --help', {
+  desc: 'Show this help text',
+  group: 'Global Options:',
+  implicitCommand: false
+})
+```
+
+See [Help and Version](/docs/help-version-type.html) for further details and examples.
 
 <a name="number"></a>
 ## `.number(flags, opts)`
 
-> Needs docs!
+<sup>Since 1.0.0</sup>
+
+Add a flagged option that should be parsed as a number.
+
+- &nbsp;`flags`: string, no default
+
+  Defines the flags used in help text and aliases to expect when parsing.
+
+  For example, `'-n, --num <number>'` would allow `-n` or `--num` to be given when parsing.
+
+- &nbsp;`opts`: object, no default
+
+  See [common type properties](/docs/type-properties.html).
+
+Returns the `Api` instance for method chaining.
+
+Example:
+
+```js
+sywac
+  .number('-p, --port <port>', {
+    desc: 'Which port to the app should listen on',
+    defaultValue: 8080
+  })
+  .number('--price <amount>', {
+    desc: 'The price in US currency',
+    defaultValue: 0.99,
+    coerce: val => Number(val.toFixed(2))
+  })
+```
+
+See [Number](/docs/number-type.html) for further details and examples.
 
 <a name="numberArray"></a>
 ## `.numberArray(flags, opts)`
 
-> Needs docs!
+<sup>Since 1.0.0</sup>
+
+Add a flagged option that should be parsed as an array of numbers.
+
+- &nbsp;`flags`: string, no default
+
+  Defines the flags used in help text and aliases to expect when parsing.
+
+  For example, `'-n, --numbers <values..>'` would allow `-n` or `--numbers` to be given when parsing.
+
+- &nbsp;`opts`: object, no default
+
+  See [array](#array) method for list of supported properties.
+
+Returns the `Api` instance for method chaining.
+
+Example:
+
+```js
+sywac.numberArray('-s, --sum <x,y,z..>', {
+  desc: 'Specify one or more numbers to add together'
+})
+```
+
+See [Array](/docs/array-type.html) for further details and examples.
 
 <a name="option"></a>
 ## `.option(flags, opts)`
@@ -428,17 +722,85 @@ See [Path / File / Dir](/docs/path-type.html) for further details and examples.
 <a name="showHelpByDefault"></a>
 ## `.showHelpByDefault(boolean)`
 
-> Needs docs!
+<sup>Since 1.0.0</sup>
+
+Enable a mode that outputs help text when no arguments or options are given on the command line.
+
+In a command-driven configuration, this will add a default command (if no default command is explicitly defined) at each subcommand level that outputs the help text. The idea is to show help when no explicit command/subcommand is given on the command line.
+
+- &nbsp;`boolean`: boolean, default `true`
+
+  Whether to enable the mode or not.
+
+  Any value other than `false` (including no value) will enable the mode.
+
+Returns the `Api` instance for method chaining.
+
+Example:
+
+```js
+sywac.showHelpByDefault()
+```
 
 <a name="string"></a>
 ## `.string(flags, opts)`
 
-> Needs docs!
+<sup>Since 1.0.0</sup>
+
+Add a flagged option that should be parsed as a string.
+
+- &nbsp;`flags`: string, no default
+
+  Defines the flags used in help text and aliases to expect when parsing.
+
+  For example, `'-s, --str <string>'` would allow `-s` or `--str` to be given when parsing.
+
+- &nbsp;`opts`: object, no default
+
+  See [common type properties](/docs/type-properties.html).
+
+Returns the `Api` instance for method chaining.
+
+Example:
+
+```js
+sywac.string('-n, --name <name>', {
+  desc: 'Specify a name'
+})
+```
+
+See [String](/docs/string-type.html) for further details and examples.
 
 <a name="stringArray"></a>
 ## `.stringArray(flags, opts)`
 
-> Needs docs!
+<sup>Since 1.0.0</sup>
+
+Add a flagged option that should be parsed as an array of strings.
+
+This is a more explicit form of `.array(flags, opts)`.
+
+- &nbsp;`flags`: string, no default
+
+  Defines the flags used in help text and aliases to expect when parsing.
+
+  For example, `'-a, --array <values..>'` would allow `-a` or `--array` to be given when parsing.
+
+- &nbsp;`opts`: object, no default
+
+  See [array](#array) method for list of supported properties.
+
+Returns the `Api` instance for method chaining.
+
+Example:
+
+```js
+sywac.stringArray('-n, --names <a,b,c..>', {
+  desc: 'Specify one or more names'
+})
+```
+
+See [Array](/docs/array-type.html) for further details and examples.
 
 <a name="style"></a>
 ## `.style(hooks)`
@@ -453,4 +815,54 @@ See [Path / File / Dir](/docs/path-type.html) for further details and examples.
 <a name="version"></a>
 ## `.version(flags, opts)`
 
-> Needs docs!
+<sup>Since 1.0.0</sup>
+
+Add a flagged option that should be parsed as a boolean and trigger output of the program version number.
+
+- &nbsp;`flags`: string, default `'--version'`
+
+  Defines the flags used in help text and aliases to expect when parsing.
+
+  For example, `'-v, --version'` would allow `-v` or `--version` to be given when parsing.
+
+- &nbsp;`opts`: object, no default
+
+  In addition to [common type properties](/docs/type-properties.html), the object may also define:
+
+  - &nbsp;`description` or `desc`: string, default `'Show version number'`
+
+    The description displayed in help text for this option.
+
+  - &nbsp;`implicitCommand`: boolean, default `true`
+
+    Whether to enable implicit commands for any multi-char flags/aliases defined for this option.
+
+    An implicit command allows the program version to be requested via command (e.g. `program version`) as well as by option/flag (e.g. `program whatever --version`).
+
+  - &nbsp;`version`: string or function, default will be determined from package.json
+
+    Define this property to forgo package.json lookup and use the given version instead.
+
+    If `version` is a string, it will be output as the program version.
+
+    If `version` is a function, it should be synchronous, and its returned value will be output as the program version.
+
+Returns the `Api` instance for method chaining.
+
+Example:
+
+```js
+// use all defaults
+sywac.version()
+// specify just flags
+sywac.version('-v, --version')
+// specify flags and opts
+sywac.version('-v, --version', {
+  desc: 'Output the program version number',
+  group: 'Global Options:',
+  implicitCommand: false,
+  version: '1.2.3'
+})
+```
+
+See [Help and Version](/docs/help-version-type.html) for further details and examples.
