@@ -1,122 +1,88 @@
 ---
-title: Features
-prev: /docs/command-modules.html
-next: /about/comparison-matrix.html
+title: What is Sywac?
+next: /about/features.html
 ---
-# Features
+# What is Sywac?
 
-## Single package install
+## <u>S</u>o <u>y</u>ou <u>w</u>ant <u>a</u> <u>C</u>LI... ☺
 
-Let's keep things lightweight. No need to install a bunch of dependencies, many of which you probably don't need or want, just to build a CLI.
+__Sywac__ is a small framework for building fast and beautiful command line apps in Node.js.
+
+The central tenets of sywac are:
+
+1. Asynchronous _parsing_ and _validation_ of arguments
+2. Asynchronous _execution_ of app logic
+3. A _pluggable_, _type-based_ engine
+4. A _simple_, _coherent_ API
+
+## But aren't there other libraries that do this already?
+
+While there are a handful of good argument parsers out there, like [yargs](http://yargs.js.org/) and [commander](http://tj.github.io/commander.js/), none of them support __asynchronous__ parsing and execution, and none of them have the level of flexibility and customization that sywac has.
+
+The [author](https://github.com/nexdrew) of sywac is actually a maintainer of yargs, and, after realizing [some](https://github.com/yargs/yargs/issues/541#issuecomment-256682437) [of](https://github.com/yargs/yargs/issues/756) [the](https://github.com/yargs/yargs/issues/564) [major](https://github.com/yargs/yargs/issues/510) [limitations](https://github.com/yargs/yargs/issues/859) inherent in the yargs architecture, he opted for a full rewrite, attempting to fix API problems and solve a lot of known issues along the way. Painful? Yes. But also well worth it.
+
+For a detailed comparison of features, see the [Comparison Matrix](/about/comparison-matrix.html).
+
+## Why is asynchronous parsing so important?
+
+There are several reasons, but the main ones are:
+
+- Support for asynchronous input
+
+    Input for your CLI can come from several places, and some input sources are asynchronous by nature, like reading from stdin, prompting a user for inputs, or reading configuration files from the file system.
+
+    While `sywac@1.0.0` does not yet support all of these input sources, its asynchronous framework has the ability to do so.
+
+- Support for asynchronous validation
+
+    Sometimes validation of inputs relies on external resources, like the file system, a database, or an HTTP endpoint, which just works better if it can be done asynchronously.
+
+    With sywac, you can do this without muddying up your app logic _after_ parsing and validation has occurred.
+
+- Better app control flow
+
+    If your CLI app relies on execution of commands, how do you know if a command was run once the CLI library returns the parsed results? Do you have to keep track of custom variables or context between modules? How do you know if the command completed successfully, particularly if it's asynchronous? What if you need to wait for it to complete before handling the results?
+
+    With sywac, you don't have to worry about this. It does the right thing and waits for your command to resolve before reporting back the results of execution.
+
+- Support for `async`/`await`
+
+    [As of Node.js 7.10.0](http://node.green/#ES2017-features-async-functions-await), `async`/`await` is natively available to your app logic.
+
+    Does your CLI library support it?
+
+- This is Node.js
+
+    Node.js is really, really good at asynchronous tasks and managing concurrency, and apps written to leverage this capability are highly performant.
+
+    Why should our CLIs be any different?
+
+The wonderful thing about using an asynchronous framework is that the "cost" of writing non-blocking code has been paid for you. Even if your app logic doesn't need to be asynchronous, it still fits with sywac since the framework wraps any `return` in a `Promise`, and you don't sacrifice anything.
+
+## What do you mean by flexibility and customization?
+
+Have you ever encountered a small problem with your CLI library, one that you could easily fix if it only allowed you to plug in your own bit of code? Sywac allows you to do this.
+
+Maybe you like your CLI library but there are parts of it you just can't customize or override. In sywac, almost every component built into the framework can be swapped out.
+
+How about styling or customizing the help text without having to write the whole thing yourself? Sywac gives you the hooks to do this too.
+
+## What do you mean by a type-based engine?
+
+When it comes to parsing CLI arguments (or a command string for a chatbot), the ability to correctly interpret each argument is highly dependent on the _type_ of value the argument represents. Here's an example:
 
 ```bash
-$ npm i --save sywac
-+ sywac@1.0.0
-added 1 package in 1.048s
+$ program push -f artifact.tgz
 ```
 
-A major goal of sywac has always been to deliver a robust CLI framework as a single standalone dependency.
+Is `push` a command or a positional argument? Is `artifact.tgz` supposed to be the value of `-f`? If it is, is the value supposed to represent a file that does or does not exist? What if `-f` represents a boolean and `artifact.tgz` is a positional argument?
 
-Does this go against the Unix philosophy of ["do one thing and do it well"](https://en.wikipedia.org/wiki/Unix_philosophy#Do_One_Thing_and_Do_It_Well)? Possibly. All I really know is that, as a CLI author myself, I started avoiding the use of certain packages because I didn't want users of my CLI (and the systems on which they were installed) to have to download dozens of packages just to use my one simple program. You may disagree, and that's fine. Everyone can choose based on what's important to them.
+The only way to correctly interpret the arguments is based on the expected _types_ defined in `program`.
 
-## Asynchronous parsing, validation, and command execution
+Now most command line parsers support type definitions, typically by configuring a parser and letting the synchronous parser do the work.
 
-Most CLI libraries use synchronous parsing - which makes sense when parsing logic is centralized and doesn't need to account for asynchronous sources of input - but this is exactly what makes sywac different. It uses an engine based on native `Promise` support to provide a highly performant, parsing-via-delegation system that supports asynchronous inputs, validation of those inputs, and well-defined control flow of application logic.
+But in sywac, each expected argument is represented by an instance of a special Type class, and parsing is delegated to these type instances in an asynchronous, highly concurrent fashion. Now, instead of a single parser having all the power, each type instance is allowed to parse its own arguments, making a system where it's easy to plug in your own types and change how arguments are parsed and interpreted.
 
-For details on this part of the API, see [Asynchronous Parsing, Validation, Execution](/docs/async-parsing.html).
+## Ok, what's next?
 
-## Type-based argument parsing
-
-Instead of telling a centralized parser about what types to expect, sywac delegates parsing to separate instances of each defined type so there is no centralized parser. This allows for a pluggable framework where it's easy to customize the parsing logic in a modular way, if you need to. It also means configuration of each type is encapsulated per instance for a clear separation of concerns.
-
-To read more aboue how this works, see [API Instance and Types](/docs/api-and-types.html).
-
-## Plug in your own types or override/extend the built-in ones
-
-Sywac comes with a set of basic argument/option types, exposed via individual classes. If there's a special type that sywac doesn't have built-in support for, you can plug your own in (or perhaps plug in a custom type that someone else wrote). You can even override the built-in types if they don't do exactly what you want them to do.
-
-For examples of custom types and how to plug them in, see [Custom Types](/docs/custom-types.html).
-
-## Support for simple CLIs or complex nested command trees
-
-Sywac supports the simplest of CLIs, perhaps accepting only one or two arguments, but it also has the power to support advanced command-driven CLIs where each command can have its own tree of arbitrary nested commands and arguments.
-
-For simpler use-cases, see the [Quick Start Guide](/docs/).
-
-For details on command support, see [Commands](/docs/command-type.html).
-
-## First-class support for positional arguments, with or without commands
-
-Positional arguments make for great CLIs, since you can give a program its main arguments without requiring any fancy flags or argument prefixes. Sadly, other popular CLI libraries only support positional arguments in certain use-cases or don't document them in generated help content or don't support parsing them as specific datatypes. In sywac, positional arguments are first-class citizens, allowing you to build intuitive CLIs with or without commands.
-
-For more info on positional argument support, see [Positionals](/docs/positional-type.html).
-
-## Flexible auto-generated help content
-
-Sywac always attempts to Do The Right Thing™, and makes doing the right thing easy. So when it comes to help text for your CLI, you provide the "flags" and descriptions of your commands/arguments/options and sywac does the rest - building a clean, informative, and consistent help text body by default.
-
-However, there are times when the default generated content just doesn't cut it. For those times, sywac allows you to customize each part of the generated content or even override the whole thing with your own help buffer object or class.
-
-For details on the auto-generated help text and how to customize it, see [Help Text](/docs/help-text.html).
-
-## Support for ANSI styles/colors
-
-Speaking of help text, have you ever wanted to make your CLI stand out and look professional using colors and styles in your help content? Other CLI libraries either don't allow you to use ANSI styles for certain parts of the help text (e.g. in option flags) or require you to statically write the whole help text yourself to support colors.
-
-Sywac was built with styling in mind and strives to support ANSI escape codes in every part of the generated help text. And the best part is you can keep your styling logic separate from your type definitions using _style hooks_ for a clear separation of concerns.
-
-For more info on style hooks, see [Style Hooks](/docs/style-hooks.html) or keep reading below.
-
-## Define styles/colors inline or decorate content with style hooks
-
-When it comes to supporting ANSI styles and colors, sywac allows you to define your command/argument/option "flags" and descriptions with ANSI escape codes inline:
-
-```js
-const chalk = require('chalk')
-require('sywac')
-  .string(chalk`{green -s}, {green --str} {yellow <string>}`, {
-    desc: chalk.white('A string option'),
-    hints: chalk.dim('[string]')
-  })
-  .help().showHelpByDefault()
-  .parseAndExit().then(argv => console.log(`Your string is: ${argv.str}`))
-```
-
-Or, for more control and a clearer separation of concerns, add styles and colors using _style hooks_:
-
-```js
-const chalk = require('chalk')
-require('sywac')
-  .string('-s, --str <string>', { desc: 'A string option' })
-  .help().showHelpByDefault()
-  .style({
-    flags: s => chalk.green(s),
-    desc: s => chalk.white(s),
-    hints: s => chalk.dim(s)
-  })
-  .parseAndExit().then(argv => console.log(`Your string is: ${argv.str}`))
-```
-
-Sywac even allows you to dynamically change the help text style/color for arguments/options that are invalid when validation fails. This is standard practice in web apps with HTML forms, why not apply this practice to our CLIs too?
-
-For more details on this feature, see [Style Hooks](/docs/style-hooks.html).
-
-## Coherent API
-
-In the sywac API, the way you define/configure one argument/option works the same for all arguments/options, regardless of the type or method, and property names are reused so they are common across multiple API methods. This applies to basic option types like [boolean](/docs/boolean-type.html)/[string](/docs/string-type.html), specialty option types likes [help/version](/docs/help-version-type.html), and advanced types like [command](/docs/command-type.html). And you only need to specify each thing once - no more repeating keys or aliases across multiple methods to configure one type.
-
-For details on common type properties, see [Common Type Properties](/docs/type-properties.html).
-
-## Parse strings as easily as `process.argv`
-
-From inception, sywac was designed to support parsing strings (like chatbot messages) as well as arrays (like `process.argv`), and its API doesn't co-mingle configuration state with parsing/execution/result state. Each message or set of arguments that need to be parsed are treated as a separate, individual request, much like an HTTP framework. This also makes testing with sywac a breeze.
-
-See [Asynchronous Parsing, Validation, Execution](/docs/async-parsing.html) for details on parsing and [Context](/docs/context.html) for details on state. Or keep reading to learn why sywac works just as well for server-side apps as for CLI apps.
-
-## Supports concurrent parsing, safe for chatbots or other server-side apps
-
-Although sywac was primarily built for making robust CLIs (even the name "sywac" is an acronym for "so you want a CLI"), a lot of effort in sywac's implementation went towards support for parsing different messages/arguments _at the same time_, using the same configuration.
-
-This is why [synchronous configuration](/docs/sync-config.html) state is encapsulated within "long-lived" type instances but [asynchronous parsing](/docs/async-parsing.html) state is encapsulated within a "short-lived" [context](/docs/context.html) instance, much like an HTTP request. Also, for command-driven parsing, the [asynchronous run handler](/docs/command-run.html) of a command is meant to be functional, such that any execution state it needs is passed as a function argument, much like a controller in an MVC framework.
-
-These details, combined with its asynchronous parsing engine, make sywac a great solution for server-side apps that need message parsing, like a chatbot, supporting concurrent parsing/message-handling in a highly performant system.
+Check out the [Quick Start Guide](/docs) to get started right away, or click Next to continue reading about the project.

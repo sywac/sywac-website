@@ -1,6 +1,6 @@
 ---
 title: Comparison Matrix
-prev: /about
+prev: /about/features.html
 next: /about/roadmap.html
 ---
 # Comparison Matrix
