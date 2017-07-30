@@ -1,6 +1,5 @@
 ---
 title: Quick Start
-prev: /
 next: /docs/api-and-types.html
 ---
 # Quick Start Guide

@@ -1,9 +1,14 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title><%= page.title ? page.title + ' - ' : '' %><%= config.title %></title>
   <meta name="viewport" content="width=device-width">
-  <meta property="og:title" content="<%= page.title ? page.title + ' - ' : '' %><%= config.title %>">
+  <% if (page.source === 'index.md') { %>
+  <title>Sywac - <%= config.description %></title>
+  <meta property="og:title" content="Sywac - <%= config.description %>">
+  <% } else { %>
+  <title><%= page.title ? page.title + ' - ' : '' %><%= page.source.split('/')[0] === 'docs' ? 'Sywac Docs' : 'About Sywac' %></title>
+  <meta property="og:title" content="<%= page.title ? page.title + ' - ' : '' %><%= page.source.split('/')[0] === 'docs' ? 'Sywac Docs' : 'About Sywac' %>">
+  <% } %>
   <meta property="og:type" content="website">
   <meta property="og:url" content="http://sywac.io">
   <meta property="og:description" content="<%= config.description %>">

@@ -308,7 +308,7 @@ h1:hover .hash-link, h2:hover .hash-link, h3:hover .hash-link, h4:hover .hash-li
 }
 
 .hero-logo {
-  margin: -40px 0 -80px;
+  margin: 0px 0 -80px;
 }
 
 .hero .text {
@@ -436,7 +436,8 @@ h1:hover .hash-link, h2:hover .hash-link, h3:hover .hash-link, h4:hover .hash-li
 .marketing-col {
   float: left;
   margin-left: 40px;
-  width: 296px;
+  width: 280px;
+  text-align: center;
 }
 
 .marketing-col h3 {
@@ -445,6 +446,7 @@ h1:hover .hash-link, h2:hover .hash-link, h3:hover .hash-link, h4:hover .hash-li
 
 .marketing-col p {
   font-size: 16px;
+  text-align: justify;
 }
 
 .marketing-col:first-child {
@@ -1319,6 +1321,9 @@ pre[class*="language-"],
   .nav-docs {
     margin-top: 25px;
     float: none;
+  }
+  .marketing-col {
+    margin-left: 0;
   }
 }
 

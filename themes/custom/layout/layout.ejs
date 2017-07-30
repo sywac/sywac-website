@@ -4,18 +4,47 @@
 <body>
   <div class="container">
     <%- partial('_partial/header') %>
+    <% if (page.source === 'index.md') { %>
+    <div class="hero">
+      <div class="wrap">
+        <img class="hero-logo" src="/logo_hero.png">
+        <h1 class="text">&nbsp;</h1>
+        <h2 class="minitext"><%= config.description %></h2>
+        <div class="buttons-unit">
+          <a class="button" href="/docs">Get Started</a>
+        </div>
+      </div>
+    </div>
+    <section class="content wrap">
+      <section class="marketing-row">
+        <div class="marketing-col">
+          <img src="/queue.png" height="116">
+          <h3>Asynchronous</h3>
+          <p>The first CLI framework for Node.js that supports asynchronous inputs, parsing, validation, and execution</p>
+        </div>
+        <div class="marketing-col">
+          <img src="/plug.png" height="116">
+          <h3>Pluggable</h3>
+          <p>A pluggable architecture allows you to add your own components to the framework or override the ones built in</p>
+        </div>
+        <div class="marketing-col">
+          <img src="/pyramid.png" height="116">
+          <h3>Coherent</h3>
+          <p>A well-defined API that keeps things DRY, consistent, and intuitive, delivered as a single package install</p>
+        </div>
+      </section>
+      <section style="text-align: center"><sup>Icons by <a href="https://thenounproject.com/tkirby/">Kirby Wu</a> from the Noun Project</sup></section>
+    </section>
+    <% } else { %>
     <section class="content wrap documentationContent">
-      <!-- start "body" in layout.ejs -->
       <%- body %>
-      <!-- end "body" in layout.ejs -->
       <% if (page.source.split('/')[0] === 'docs') { %>
       <%- partial('_partial/sidebar-docs') %>
       <% } else if (page.source.split('/')[0] === 'about') { %>
       <%- partial('_partial/sidebar-about') %>
-      <% } else { %>
-      <%- partial('_partial/sidebar-index') %>
       <% } %>
     </section>
+    <% } %>
     <%- partial('_partial/footer') %>
   </div>
   <script>
