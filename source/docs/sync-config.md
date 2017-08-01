@@ -692,32 +692,354 @@ See [Array](/docs/array-type.html) for further details and examples.
 <a name="option"></a>
 ## `.option(flags, opts)`
 
-> Needs docs!
+<sup>Since 1.0.0</sup>
+
+Add a flagged option that specifies its `type` in the `opts` configuration.
+
+- &nbsp;`flags`: string, no default
+
+  Defines the flags used in help text and aliases to expect when parsing.
+
+  For example, `'-o, --opt <value>'` would allow `-o` or `--opt` to be given when parsing.
+
+- &nbsp;`opts`: object, no default
+
+  In addition to [common type properties](/docs/type-properties.html), the object should also define:
+
+  - &nbsp;`type`: string, no default
+
+    Specifies the factory name of the type to be added. This may be one of the following built-in types or any name that has been registered with a factory via the [registerFactory](#registerFactory) method: `'boolean'`, `'string'`, `'number'`, `'path'`, `'file'`, `'dir'`, `'enum'`, `'array'`
+
+    A value prefixed with `'array:'` will add an array of the specified type.
+
+    In 1.0.0, if no `type` is specified, no option will be added.
+
+Returns the `Api` instance for method chaining.
+
+Example using built-in types:
+
+```js
+sywac
+  .option('-s, --str <string>', {
+    type: 'string',
+    desc: 'A string option'
+  })
+  .option('-i, --ingredients <a,b,c..>', {
+    type: 'array:enum', // prefix "array:" to make an array of that type
+    choices: ['pb', 'jelly', 'banana', 'apple', 'pickle'],
+    desc: 'What would you like on your sandwich?'
+  })
+```
+
+Example using custom type:
+
+```js
+const Type = require('sywac/types/type')
+class Range extends Type {
+  get datatype () {
+    return 'range'
+  }
+  setValue (context, value) {
+    if (typeof value !== 'string') {
+      return context.assignValue(this.id, {start: NaN, finish: NaN})
+    }
+    const vals = value.split(/(\.)\1{1,}/)
+    const numbers = vals.filter(v => v && v !== '.')
+    context.assignValue(this.id, {
+      start: Number(numbers[0]),
+      finish: Number(numbers[1])
+    })
+  }
+  validateValue (value) {
+    return value &&
+      typeof value.start === 'number' && !isNaN(value.start) &&
+      typeof value.finish === 'number' && !isNaN(value.finish)
+  }
+  buildInvalidMessage (context, msgAndArgs) {
+    super.buildInvalidMessage(context, msgAndArgs)
+    const value = msgAndArgs.args[0]
+    msgAndArgs.args[0] = `{start: ${value.start}, finish: ${value.finish}}`
+    msgAndArgs.msg += ' Please specify two numbers.'
+  }
+}
+sywac
+  .registerFactory('range', opts => new Range(opts))
+  .option('-r, --range <num..num>', {
+    type: 'range',
+    desc: 'Two numbers separated by two or more dots',
+    defaultValue: '1..10',
+    strict: true
+  })
+```
+
+See [General Type Info](/docs/info-types.html) for more info on types.
 
 <a name="outputSettings"></a>
 ## `.outputSettings(settings)`
 
-> Needs docs!
+<sup>Since 1.0.0</sup>
+
+Configure output settings for generated help text.
+
+- &nbsp;`settings`: object, no default
+
+  An object representing output configuration, supporting the following properties:
+
+  - &nbsp;`maxWidth`: number, default `Math.min(100, process.stdout.columns)`
+
+    Define the maximum number of character/code-point columns allowed for generated help text.
+
+  - &nbsp;`showHelpOnError`: boolean, default `true`
+
+    Should generated help text be output when a validation error occurs?
+
+    If this is disabled, only the error messages will be output on errors.
+
+  - &nbsp;`examplePrefix`: string, default `'$ '`
+
+    The prefix used before each [example](#example) command in help text.
+
+  - &nbsp;`lineSep`: string, default `'\n'`
+
+    A string used to separate lines in generated help text.
+
+  - &nbsp;`sectionSep`: string, default `lineSep + lineSep`
+
+    A string used to separate sections in generated help text.
+
+  - &nbsp;`pad`: string, default `' '`
+
+    A string that is multiplied to define padding between aligned columns in generated help text.
+
+  - &nbsp;`indent`: string, default `pad + pad`
+
+    A string used to define minimum indentation for each aligned column in generated help text.
+
+  - &nbsp;`split`: RegExp, default `/\s/g`
+
+    Used to define word boundaries when dividing a string (like a description) wider than `maxWidth` into multiple chunks/lines.
+
+Returns the `Api` instance for method chaining.
+
+Example:
+
+```js
+sywac.outputSettings({
+  maxWidth: 75,          // limit help text to 75 columns
+  showHelpOnError: false // do not show help text on validations errors
+})
+```
+
+See [Help Text](/docs/help-text.html) for further details and examples.
 
 <a name="path"></a>
 ## `.path(flags, opts)`
 
-> Needs docs!
+<sup>Since 1.0.0</sup>
+
+Add a flagged option that should be parsed as a file or directory path.
+
+- &nbsp;`flags`: string, no default
+
+  Defines the flags used in help text and aliases to expect when parsing.
+
+  For example, `'-p, --path <path>'` would allow `-p` or `--path` to be given when parsing.
+
+- &nbsp;`opts`: object, no default
+
+  In addition to [common type properties](/docs/type-properties.html), the object may also define:
+
+  - &nbsp;`mustExist`: boolean, no default
+
+    Enables validation that requires the specified path to either exist or not exist on the local file system.
+
+    Use a value of `true` to require the path to exist locally.
+
+    Use a value of `false` to require the path to NOT exist locally.
+
+    If `mustExist` is undefined, the path will not be validated, to support cases where the path does not apply to the local file system (i.e. could be a remote path).
+
+  - &nbsp;`dirAllowed`: boolean, default `true`
+
+    Should this path allow directories?
+
+    Note that if `mustExist` is undefined, this property is only suggestive, as commentary in help text.
+
+  - &nbsp;`fileAllowed`: boolean, default `true`
+
+    Should this path allow files?
+
+    Note that if `mustExist` is undefined, this property is only suggestive, as commentary in help text.
+
+  - &nbsp;`normalize`: boolean, default `false`
+
+    Transform the parsed value into a normalized path string using [path.normalize(path)](https://nodejs.org/api/path.html#path_path_normalize_path).
+
+  - &nbsp;`asObject`: boolean, default `false`
+
+    Transform the parsed value into an object using [path.parse(path)](https://nodejs.org/api/path.html#path_path_parse_path).
+
+Returns the `Api` instance for method chaining.
+
+Example:
+
+```js
+sywac.path('-p, --path <path>', {
+  desc: 'A normalized path',
+  normalize: true
+})
+```
+
+See [Path / File / Dir](/docs/path-type.html) for further details and examples.
 
 <a name="positional"></a>
 ## `.positional(dsl, opts)`
 
-> Needs docs!
+<sup>Since 1.0.0</sup>
+
+Add one or more positional arguments to your program without using [commands](#command).
+
+- &nbsp;`dsl`: string, no default
+
+  A string defining each positional argument, along with any flags that might be used to specify the argument as well.
+
+  Each argument may consist of the following:
+
+  1. flags, surrounded by `[` and `]` and followed by a space, e.g. `[--key] ` or `[-k|--key] `
+  2. opening delimiter, e.g. use `[` if the argument is optional or `<` if the argument is required
+  3. aliases and implicit type, separated by `|`, e.g. `name` or `name|email` or `string` or `file`
+  4. explicit type, preceded by `:`, e.g. `:number` or `:enum` or `:path`
+  5. variadic designation via `..`, which wraps the type in an array and accepts multiple values
+  6. default value, preceded by `=`, e.g. `=package.json` or `=8080`
+  7. closing delimiter (if opening delimiter was defined), e.g. use `]` or `>`
+
+  The only thing required for each argument is its alias(es).
+
+  If no flags are given, the argument will only be defined by position during parsing.
+
+  If no opening or closing delimiters are given, the argument is assumed to be required.
+
+  If no explicit type is given, the type will be defined implicitly by the first alias (if the alias matches the name of any registered factories) or will default to a string.
+
+  Note that the dsl string will be used in generated usage and help text by default. Therefore you can include content in the dsl string that is purely commentary and should not be interpreted as explicit positional arguments. To do this, just specify the content to ignore via the `ignore` property in `opts`.
+
+- &nbsp;`opts`: object, no default
+
+  The following configuration properties are supported:
+
+  - &nbsp;`ignore`: string or array of strings, no default
+
+    Words to ignore in the dsl string.
+
+    For example, if your dsl string was `'<name> [options] [others..]'` and wanted `[options]` and `[others..]` to be used only for help text, you could specify `ignore: ['[options]', '[others..]']` and then `<name>` would be the only positional arg added.
+
+  - &nbsp;`params`: array of objects, default determined by dsl
+
+    Each object in the array will be treated as `opts` for the respective type in the dsl string.
+
+    If you specify `type` for the object in `params`, it will override the implicit/explicit type determined from the dsl string.
+
+    Refer to [common type properties](/docs/type-properties.html) or the [option](#option) method or the method for the type to see all supported properties.
+
+  - &nbsp;`paramsDescription` or `paramsDesc`: string or array of strings, no default
+
+    Use this to add a description for the positional args in the dsl string without having to define `params`.
+
+    If you provide a string, it will be used for the first positional arg in the dsl string.
+
+    If you provide an array, each string will be used for the respective positional arg in the dsl string.
+
+  - &nbsp;`paramsGroup`: string, default `'Arguments:'`
+
+    Use this to define the help text group header for all positional args in the dsl string, instead of defining the `group` in every object of `params`.
+
+Returns the `Api` instance for method chaining.
+
+Example:
+
+```js
+// this defines two positional args:
+// 1. service: string, required, positional only, no default
+// 2. host or H: string, optional, positional or flag, default 'localhost'
+sywac.positional('<service> [-H|--host] [host=localhost]', {
+  paramsDesc: [
+    'The service to deploy',
+    'The target deployment host'
+  ]
+})
+```
+
+See [Positionals](/docs/positional-type.html) for further details and examples.
 
 <a name="preface"></a>
-## `.preface(icon, slogan)`
+## `.preface(logo, slogan)`
 
-> Needs docs!
+<sup>Since 1.0.0</sup>
+
+Define a logo and/or slogan to display at the beginning of generated help text.
+
+If called more than once, it will overwrite any previous value(s).
+
+- &nbsp;`logo`: string, no default
+
+  A string representing the logo for your CLI/app to display in generated help text.
+
+  Try combining a [figlet](https://github.com/patorjk/figlet.js) ASCII font with [chalk](https://github.com/chalk/chalk) colors for a quick and pretty logo.
+
+- &nbsp;`slogan`: string, no default
+
+  A string representing a slogan or description for your CLI/app to display in generated help text.
+
+Returns the `Api` instance for method chaining.
+
+Example:
+
+```js
+const figlet = require('figlet')
+sywac.preface(
+  figlet.textSync('npm-check', 'Stop'),
+  'Check for outdated, incorrect, and unused dependencies.'
+)
+```
+
+See [Help Text](/docs/help-text.html) for further details and examples.
 
 <a name="registerFactory"></a>
 ## `.registerFactory(name, factory)`
 
-> Needs docs!
+<sup>Since 1.0.0</sup>
+
+Register a factory method/function that should be used to create type instances for the given name.
+
+Use this to plug in your own types into the framework, or use it to override the factories for built-in types.
+
+Note that this should be called _before_ other methods that use the factory.
+
+- &nbsp;`name`: string, no default
+
+  The name of the type referenced by [option](#option), [positional](#positional), or internally by any type-named method.
+
+  For example, the factory for `'boolean'` is used by the [boolean](#boolean) method.
+
+- &nbsp;`factory`: function, no default
+
+  The function that returns a new type instance for each invocation.
+
+  It should accept one argument representing the `opts` configuration object for the type.
+
+Returns the `Api` instance for method chaining.
+
+Example:
+
+```js
+sywac
+  // add a new type
+  .registerFactory('port', opts => new TypePort(opts))
+  // override an existing one
+  .registerFactory('boolean', opts => new CustomBoolean(opts))
+```
+
+See [Custom Types](/docs/custom-types.html) for further details and examples.
 
 <a name="showHelpByDefault"></a>
 ## `.showHelpByDefault(boolean)`
@@ -805,12 +1127,158 @@ See [Array](/docs/array-type.html) for further details and examples.
 <a name="style"></a>
 ## `.style(hooks)`
 
-> Needs docs!
+<sup>Since 1.0.0</sup>
+
+Define functions to style respective portions of generated help text.
+
+- &nbsp;`hooks`: object, no default
+
+  The following properties are supported:
+
+  - &nbsp;`usagePrefix`: function, no default
+
+    Style the prefix part of generated usage, i.e. `'Usage: program'`
+
+  - &nbsp;`usagePositionals`: function, no default
+
+    Style the positionals part of generated usage, if any, as defined by [positional](#positional).
+
+  - &nbsp;`usageCommandPlaceholder`: function, no default
+
+    Style the command placeholder part of generated usage, if commands are defined, i.e. `'<command>'`
+
+  - &nbsp;`usageArgsPlaceholder`: function, no default
+
+    Style the args placeholder part of generated usage, if a defined command has positional args, i.e. `'<args>'`
+
+  - &nbsp;`usageOptionsPlaceholder`: function, no default
+
+    Style the options placeholder part of generated usage, if options are defined, i.e. `'[options]'`
+
+  - &nbsp;`group`: function, no default
+
+    Style each group header for defined types in generated help text.
+
+  - &nbsp;`flags`: function, no default
+
+    Style the flags for each defined type in generated help text.
+
+  - &nbsp;`desc`: function, no default
+
+    Style the description for each defined type in generated help text.
+
+  - &nbsp;`hints`: function, no default
+
+    Style the generated hints for each defined type in generated help text.
+
+  - &nbsp;`groupError`: function, default is `group` style
+
+    Style each group header for types that have validation errors.
+
+  - &nbsp;`flagsError`: function, default is `flags` style
+
+    Style the flags for each type that has a validation error.
+
+  - &nbsp;`descError`: function, default is `desc` style
+
+    Style the description for each type that has a validation error.
+
+  - &nbsp;`hintsError`: function, default is `hints` style
+
+    Style the generated hints for each type that has a validation error.
+
+  - &nbsp;`messages`: function, no default
+
+    Style the validation error messages.
+
+Returns the `Api` instance for method chaining.
+
+Example:
+
+```js
+const chalk = require('chalk')
+sywac.style({
+  // style usage components
+  usagePrefix: str => {
+    return chalk.white(str.slice(0, 6)) + ' ' + chalk.magenta(str.slice(7))
+  },
+  usageCommandPlaceholder: str => chalk.magenta(str),
+  usagePositionals: str => chalk.green(str),
+  usageArgsPlaceholder: str => chalk.green(str),
+  usageOptionsPlaceholder: str => chalk.green.dim(str),
+  // style normal help text
+  group: str => chalk.white(str),
+  flags: (str, type) => {
+    let style = type.datatype === 'command' ? chalk.magenta : chalk.green
+    if (str.startsWith('-')) style = style.dim
+    return style(str)
+  },
+  desc: str => chalk.cyan(str),
+  hints: str => chalk.dim(str),
+  // use different style when a type is invalid
+  groupError: str => chalk.red(str),
+  flagsError: str => chalk.red(str),
+  descError: str => chalk.yellow(str),
+  hintsError: str => chalk.red(str),
+  // style error messages
+  messages: str => chalk.red(str)
+})
+```
+
+See [Style Hooks](/docs/style-hooks.html) for further details and examples.
 
 <a name="usage"></a>
 ## `.usage(usage)`
 
-> Needs docs!
+<sup>Since 1.0.0</sup>
+
+Define your own static usage string for help text, or customize each part of the generated usage string.
+
+- &nbsp;`usage`: string or object
+
+  If `usage` is a string, it defines the full usage string portion of generated help text, disabling the auto-generated usage string.
+
+  If `usage` is an object, it may define the following properties:
+
+  - &nbsp;`usage`: string, default is auto-generated
+
+    Defines the full usage string, disabling the auto-generated one.
+
+  - &nbsp;`prefix`: string, default `'Usage: $0'`
+
+    Defines the prefix part of the generated usage string.
+
+    The `$0` will be replaced with the program name and any necessary commands.
+
+  - &nbsp;`commandPlaceholder`: string, default `'<command>'`
+
+    Defines the command placeholder part of the generated usage string.
+
+    Only used if commands are defined.
+
+  - &nbsp;`argsPlaceholder`: string, default `'<args>'`
+
+    Defines the args placeholder part of the generated usage string.
+
+    Only used if a command is defined with positional args.
+
+  - &nbsp;`optionsPlaceholder`: string, default `'[options]'`
+
+    Defines the options placeholder part of the generated usage string.
+
+    Only used if flagged options are defined.
+
+Returns the `Api` instance for method chaining.
+
+Example:
+
+```js
+sywac.usage({
+  prefix: 'Usage:\n  $0'
+})
+```
+
+See [Help Text](/docs/help-text.html) for further details and examples.
 
 <a name="version"></a>
 ## `.version(flags, opts)`
