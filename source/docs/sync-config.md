@@ -1165,7 +1165,7 @@ Define functions to style respective portions of generated help text.
 
   - &nbsp;`desc`: function, no default
 
-    Style the description for each defined type in generated help text.
+    Style the description for each defined type and example in generated help text.
 
   - &nbsp;`hints`: function, no default
 
@@ -1191,6 +1191,14 @@ Define functions to style respective portions of generated help text.
 
     Style the validation error messages.
 
+  - &nbsp;`example`: function, default is `flags` style (since 1.1.0)
+
+    Style each example command in generated help text.
+
+  - &nbsp;`all`: function, no default (since 1.1.0)
+
+    A hook to modify the rendered/styled help text as a whole.
+
 Returns the `Api` instance for method chaining.
 
 Example:
@@ -1215,6 +1223,12 @@ sywac.style({
   },
   desc: str => chalk.cyan(str),
   hints: str => chalk.dim(str),
+  example: str => {
+    return chalk.yellow(str.slice(0, 2)) +
+      str.slice(2).split(' ').map(word => {
+        return word.startsWith('-') ? chalk.green.dim(word) : chalk.gray(word)
+      }).join(' ')
+  },
   // use different style when a type is invalid
   groupError: str => chalk.red(str),
   flagsError: str => chalk.red(str),

@@ -4,15 +4,15 @@ prev: /about/comparison-matrix.html
 ---
 # Roadmap
 
-## 1.1.0
+## 1.2.0
 
 - <input type="checkbox" disabled="disabled"/> Add `.commandDirectory(dir)` method to `Api` to automatically add all modules in the directory as commands
 
-## 1.2.0
+## 1.3.0
 
 - <input type="checkbox" disabled="disabled"/> Add ability to read arguments from stdin, triggered via custom flag or lack of arguments
 
-## 1.3.0
+## 1.4.0
 
 - <input type="checkbox" disabled="disabled"/> Add ability to parse environment variables as arguments/options, either via program prefix or customized per type
 - <input type="checkbox" disabled="disabled"/> Add `--no-` negation support to `TypeBoolean`
