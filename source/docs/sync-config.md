@@ -15,6 +15,7 @@ The following methods are listed in alphabetical order.
 [.boolean(flags, opts)](#boolean)
 [.check(handler)](#check)
 [.command(dsl, opts)](#command)
+[.commandDirectory(dir, opts)](#commandDirectory)
 [.configure(opts)](#configure)
 [.custom(type)](#custom)
 [.dir(flags, opts)](#dir)
@@ -243,6 +244,82 @@ sywac.command(require('./commands/install'))
 ```
 
 Commands are a big topic. See [Command](/docs/command-type.html) or any of the COMMANDS pages for further details and examples.
+
+<a name="commandDirectory"></a>
+## `.commandDirectory(dir, opts)`
+
+<sup>Since 1.2.0</sup>
+
+Load all files in the given directory and add each as a command module.
+
+This is a convenient alternative to calling the [command method](#command) multiple times.
+
+For example, instead of this:
+
+```js
+sywac
+  .command(require('./commands/one'))
+  .command(require('./commands/two'))
+  .command(require('./commands/three'))
+```
+
+you could do this:
+
+```js
+sywac.commandDirectory('commands')
+```
+
+In order for a command module to be added, it must export one of the following (at least):
+
+1. An object with a `flags` or `aliases` property (to define command dsl or aliases)
+2. A function (used as the `run` handler, command alias will be the filename)
+
+Any modules encountered that do not meet these criteria will be ignored.
+
+Any files (matching the required extensions) that exist in the directory and cannot be loaded via `require()` will cause this method to throw an error.
+
+- &nbsp;`dir`: string, default is equivalent of `'.'`
+
+  The path to the directory to load modules from.
+
+  It can be relative to the file calling this method, or it can be absolute.
+
+  If not given, the directory of the calling file will be used (i.e. sibling files will be loaded).
+
+  If a directory is given that does not exist, this method will throw an error.
+
+  Nested directories in `dir` will be ignored.
+
+- &nbsp;`opts`: object or function, default `{ extensions: ['.js'] }`
+
+  The following configuration properties are supported:
+
+  - `extensions`: array of strings, files in `dir` must have one of these extensions
+
+Returns the `Api` instance for method chaining.
+
+Examples:
+
+```js
+// relative 1
+sywac.commandDirectory('commands')
+
+// relative 2
+sywac.commandDirectory('./commands')
+
+// absolute
+sywac.commandDirectory('/home/user/commands')
+
+// equivalent of __dirname
+sywac.commandDirectory()
+
+// optionally specify required file extensions
+sywac.commandDirectory('src/commands', {
+  extensions: ['.js', '.coffee']
+})
+```
+
+See [Command Modules](/docs/command-modules.html) for further details and examples.
 
 <a name="configure"></a>
 ## `.configure(opts)`

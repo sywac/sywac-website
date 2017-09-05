@@ -6,7 +6,7 @@ prev: /about/comparison-matrix.html
 
 ## 1.2.0
 
-- <input type="checkbox" disabled="disabled"/> Add `.commandDirectory(dir)` method to `Api` to automatically add all modules in the directory as commands
+- <input type="checkbox" disabled="disabled" checked/> Add `.commandDirectory(dir)` method to `Api` to automatically add all modules in the directory as commands
 
 ## 1.3.0
 

@@ -5,7 +5,7 @@ next: /about/roadmap.html
 ---
 # Comparison Matrix
 
-| __Feature__ | __sywac__@1.0.0 | __yargs__@8.0.2 | __commander__@2.11.0 |
+| __Feature__ | __sywac__@1.2.0 | __yargs__@8.0.2 | __commander__@2.11.0 |
 | ------- | ----------- | ----------- | --------------- |
 | Parsing | Async       | Sync        | Sync            |
 | Custom parsing | ✅ | ❌ | ❌ |
@@ -14,7 +14,7 @@ next: /about/roadmap.html
 | Command execution | Async, awaits completion | Sync, fire-and-forget | Sync, fire-and-forget |
 | Commands inline | ✅ | ✅ | ✅ |
 | Commands via file/module | ✅ | ✅ | ✅ |
-| Commands via directory | [On roadmap](/about/roadmap.html) | ✅ | ❌ |
+| Commands via directory | ✅ | ✅ | ❌ |
 | Arbitrary levels of nested commands | ✅ | ✅ | ❌ |
 | Default command | ✅ | ✅ | ✅ |
 | Command aliases | ✅ | ✅ | ✅ |
