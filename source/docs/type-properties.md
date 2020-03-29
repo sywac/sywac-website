@@ -8,8 +8,8 @@ next: /docs/boolean-type.html
 <a name="desc">
 ## desc / description
 
-The `desc` (or `description`) property controls the text displayed immediately the right
-of the option or argument in the generated help text.
+The `desc` (or `description`) property controls the text displayed immediately to the
+right of the option or argument in the generated help text.
 
 If not specified, the description will be blank.
 
@@ -18,7 +18,7 @@ sywac.boolean('--confirm', {
   desc: 'skip confirmation prompt'
 });
 ```
-```bash
+```console
 Options:
   --confirm  skip confirmation prompt                                  [boolean]
 ```
@@ -29,7 +29,9 @@ See also the [hints](#hints) property.
 ## group
 
 The `group` option allows you to organize options into multiple sections in the generated
-help text. By default, all options are in the section titled `Options:`.
+help text. By default, commands are grouped under the section `Commands:`, positional
+arguments are grouped under the section `Arguments:`, and flagged options are grouped
+under `Options:`.
 
 > Tip:
 >
@@ -42,7 +44,7 @@ sywac.number('-p, --port <port>', {
   group: 'Server Options:'
 });
 ```
-```bash
+```console
 Server Options:
   -p, --port <port>  port to listen on                                  [number]
 ```
@@ -77,8 +79,8 @@ sywac.positional('[users...]', {
 The `hints` property controls the type information displayed to the far right of the
 option or argument in the generated help text.
 
-By default, a hint will be generated based on the type of the option and whether it is
-marked as required - `[boolean]` or `<string>`, for example.
+By default, a hint will be generated automatically based on the type of the option -
+for example, `[boolean]` or `[number]`.
 
 You can use this to display an optional option as if it was required, or to make the
 hint more specific.
@@ -91,7 +93,7 @@ sywac.array('--users', {
   hints: '[list of users]'
 });
 ```
-```bash
+```console
 Options:
   --name <name>                                              [required] [string]
   --users                                                        [list of users]
@@ -106,7 +108,7 @@ sywac.command({
   hints: ''                       // suppress usual aliases hint
 });
 ```
-```bash
+```console
 Commands:
   update <student-id>   update a student record
 ```
