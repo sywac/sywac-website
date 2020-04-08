@@ -14,9 +14,8 @@ Then create a `cli.js` file with code similar to this:
 
 ```javascript
 #!/usr/bin/env node
-'use strict'
 
-require('sywac')
+const cli = require('sywac')
   .positional('<string>', { paramsDesc: 'A required string argument' })
   .boolean('-b, --bool', { desc: 'A boolean option' })
   .number('-n, --num <number>', { desc: 'A number option' })
@@ -24,10 +23,15 @@ require('sywac')
   .version('-v, --version')
   .showHelpByDefault()
   .outputSettings({ maxWidth: 75 })
-  .parseAndExit()
-  .then(argv => {
-    console.log(JSON.stringify(argv, null, 2))
-  })
+
+module.exports = cli
+
+async function main () {
+  const argv = await cli.parseAndExit()
+  console.log(JSON.stringify(argv, null, 2))
+}
+
+if (require.main === module) main()
 ```
 
 Make the `cli.js` file executable:
@@ -45,6 +49,10 @@ And set up `cli.js` as the `"bin"` field in `package.json`:
   "bin": "cli.js"
 }
 ```
+
+> Tip:
+>
+> You can use `npm init sywac` to easily set up the above and add sywac to your project.
 
 Then test it out. Without any arguments, it will print the help text.
 
