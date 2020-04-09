@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 
 window.SywacDocs = {
   scrollTarget() {
@@ -9,7 +9,7 @@ window.SywacDocs = {
     }
   },
   init() {
-    window.addEventListener('load', window.SywacDocs.scrollTarget);
-    window.addEventListener('hashchange', window.SywacDocs.scrollTarget);
+    window.addEventListener('load', window.SywacDocs.scrollTarget)
+    window.addEventListener('hashchange', window.SywacDocs.scrollTarget)
   }
 }
