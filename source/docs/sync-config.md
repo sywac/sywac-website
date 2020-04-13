@@ -35,6 +35,7 @@ The following methods are listed in alphabetical order.
 [.preface(icon, slogan)](#preface)
 [.registerFactory(name, factory)](#registerFactory)
 [.showHelpByDefault(boolean)](#showHelpByDefault)
+[.strict(boolean)](#strict)
 [.string(flags, opts)](#string)
 [.stringArray(flags, opts)](#stringArray)
 [.style(hooks)](#style)
@@ -1140,6 +1141,46 @@ Example:
 ```js
 sywac.showHelpByDefault()
 ```
+
+<a name="strict"></a>
+## `.strict(boolean)`
+
+<sup>Since 1.3.0</sup>
+
+In `strict` mode, unrecognized flags and positional arguments will generate an error.
+
+- &nbsp;`boolean`: boolean, default `true`
+
+  Whether to enable the mode or not.
+
+  Any value other than `false` (including no value) will enable the mode.
+
+Returns the `Api` instance for method chaining.
+
+Example:
+
+```js
+sywac.strict()
+```
+
+> Tip:
+>
+> Default commands are considered unrecognized arguments, so if your program has a default command make sure to disable strict mode for that command.
+>
+> Example:
+>
+> ```js
+> sywac
+>   .strict()
+>   .command('start', { run: () => console.log('start') })
+>   .command('stop', { run: () => console.log('stop') })
+>   .command('*', {
+>     setup: sywac => {
+>       sywac.strict(false)
+>     },
+>     run: () => console.log('default')
+>   })
+> ```
 
 <a name="string"></a>
 ## `.string(flags, opts)`
