@@ -147,3 +147,47 @@ Here is a list of sywac styles out in the wild.
 > Tip:
 >
 > Know of a sywac style package, or have created your own? Submit a pull request for this documentation and add it to the list!
+
+## Using output settings in your style
+
+Your style hooks also have access to the user's [.outputSettings](/docs/sync-config.html#outputSettings-settings) configuration. Each property (such as `.indent`, `.lineSep`, etc.) is available as a property on `this`.
+
+Consider this styling of the usage string, which pushes the command line example down to the next line and adds a `$` (bash prompt) to the front:
+
+```js
+sywac.style({
+  usagePrefix: str => {
+    return chalk.white(str.slice(0, 6)) +
+      '\n  $ ' + chalk.magenta(str.slice(7))
+  }
+})
+
+// Usage:
+//   $ myapp blah
+```
+
+Although it works, it will look out-of-place in the user's help text if they have modified the default settings.
+
+```js
+sywac
+  .outputSettings({ indent: 4, examplePrefix: '% ', lineSep: '\r\n' })
+  .style(require('sywac-style-your-cool-style'))
+```
+
+If you are designing a style to be used by other people in their programs, you can ensure it will work for as many people as possible by respecting the configured output settings.
+
+```js
+sywac.style({
+  usagePrefix: function (str) {
+    return chalk.white(str.slice(0, 6)) +
+      `${this.lineSep}${this.indent}${this.examplePrefix}` + chalk.magenta(str.slice(7))
+  }
+})
+
+// Usage:\r
+//     % myapp blah
+```
+
+> Tip:
+>
+> Don't forget to use a standard function instead of an arrow function for your style hook if you need to access `this`.
