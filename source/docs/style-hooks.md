@@ -19,7 +19,7 @@ The hooks currently supported are:
 
 - &nbsp;`usagePositionals`: function, no default
 
-  Style the positionals part of generated usage, if any, as defined by [positional](#positional).
+  Style the positionals part of generated usage, if any, as defined by [positional](/docs/sync-config.html#positional).
 
 - &nbsp;`usageCommandPlaceholder`: function, no default
 
@@ -142,7 +142,8 @@ sywac.style(require('sywac-style-basic'))
 
 Here is a list of sywac styles out in the wild.
 
-* [sywac-style-basic](https://github.com/sywac/sywac-style-basic)
+* [sywac-style-basic](https://github.com/sywac/sywac-style-basic) (a simple style package)
+* [@tryghost/pretty-cli](https://github.com/TryGhost/Ghost-Utils/tree/master/packages/pretty-cli) (wraps sywac with its own style)
 
 > Tip:
 >
@@ -150,7 +151,7 @@ Here is a list of sywac styles out in the wild.
 
 ## Using output settings in your style
 
-Your style hooks also have access to the user's [.outputSettings](/docs/sync-config.html#outputSettings-settings) configuration. Each property (such as `.indent`, `.lineSep`, etc.) is available as a property on `this`.
+Your style hooks also have access to the user's [.outputSettings](/docs/sync-config.html#outputSettings) configuration. Each property (such as `.indent`, `.lineSep`, etc.) is available as a property on `this`.
 
 Consider this styling of the usage string, which pushes the command line example down to the next line and adds a `$` (bash prompt) to the front:
 
