@@ -119,4 +119,8 @@ sywac
 $ my-app April,Steve fruits,veggies
 Welcome April, Steve!
 I like to eat fruits, veggies!
+
+$ my-app April Steve fruits veggies
+Welcome April, Steve, fruits!
+I like to eat veggies!
 ```
