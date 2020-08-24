@@ -10,7 +10,7 @@ The API of sywac can be logically separated into two stages of an app’s lifecy
 This page covers the two `Api` methods designed for the execution stage.
 
 <a name="parse"></a>
-## `.parse(args)`
+## `.parse(args, state)`
 
 <sup>Since 1.0.0</sup>
 
@@ -23,6 +23,10 @@ Note that this method is safe to use concurrently, meaning it is suitable for se
 - &nbsp;`args`: string or array of strings, default `process.argv.slice(2)`
 
   The arguments or message to parse, validate, and execute.
+
+- &nbsp;`state`: optional user-defined state object
+
+  Rarely used, helpful for passing per-request data to concurrent parse requests. Any state you pass here will be attached to the [context](/docs/context.html).
 
 Returns a `Promise` that resolves to a result object, containing the following properties:
 
@@ -95,7 +99,7 @@ sywac.parse(msg).then(result => {
 ```
 
 <a name="parseAndExit"></a>
-## `.parseAndExit(args)`
+## `.parseAndExit(args, state)`
 
 <sup>Since 1.0.0</sup>
 
@@ -110,6 +114,10 @@ Note that in a command-driven app, it may be perfectly reasonable to call this m
 - &nbsp;`args`: string or array of strings, default `process.argv.slice(2)`
 
   The arguments or message to parse, validate, and execute.
+
+- &nbsp;`state`: optional user-defined state object
+
+  Rarely used, included for feature parity with `parse`. Any state you pass here will be attached to the [context](/docs/context.html).
 
 Returns a `Promise` that resolves to the `argv` object (subproperty of detailed results) representing the parsed arguments and options as key-value pairs, where each key is a configured alias of an argument/option and each value is the parsed/coerced value for that argument/option. See further description in the [parse method](#parse).
 
