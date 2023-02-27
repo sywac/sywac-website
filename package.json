@@ -7,8 +7,8 @@
     "version": "3.3.7"
   },
   "dependencies": {
-    "hexo": "^3.3.7",
-    "hexo-deployer-git": "^0.3.0",
+    "hexo": "^3.9.0",
+    "hexo-deployer-git": "^4.0.0",
     "hexo-generator-cname": "^0.3.0",
     "hexo-generator-seo-friendly-sitemap": "0.0.21",
     "hexo-prism-plugin": "^2.1.2",
